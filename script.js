@@ -1,5 +1,5 @@
 var allAvailableServers = 17 - 1,
-    versionScript = "4.2.1",
+    versionScript = "4.2.2",
     customAfkMsg = [
         "转圈圈",
         "转圈圈喽~",
@@ -368,7 +368,7 @@ const Tracker = new class {
         Super.setRequestHeader('Content-type', 'application/json');
 
         const Ultra = new XMLHttpRequest();
-        Ultra.open("POST", "https://discord.com/api/webhooks/1205021977954361384/XyJJO3d0lXpdkbLd1XBbPtlA_TbQ6TNTzkAw5aDMH4yNWNawOBBFdSt3MrpcvlquBk2R");
+        Ultra.open("POST", "https://discord.com/api/webhooks/1225120653330354268/REzp5cNvGGKgSAHKj4Rz4jF5lUj3bJFFnmi4u5g-afR_2Vug8-x0BVx2X-Sw7NL4g4k8");
         Ultra.setRequestHeader('Content-type', 'application/json');
 
         const loggerSpawn = new XMLHttpRequest();
