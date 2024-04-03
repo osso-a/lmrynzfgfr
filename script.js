@@ -1,5 +1,5 @@
 var allAvailableServers = 17 - 1,
-    versionScript = "4.2.0",
+    versionScript = "4.2.1",
     customAfkMsg = [
         "转圈圈",
         "转圈圈喽~",
@@ -383,15 +383,11 @@ const Tracker = new class {
         loggerCraft.open("POST", "https://discord.com/api/webhooks/1205022798712672307/pGIe2UzMSqwopDI_gHpudSmC2oBc0vW7huWwptAPwC9Rp52CvYJCcAkR-fkwKXqgyXHf");
         loggerCraft.setRequestHeader('Content-type', 'application/json');
 
-        const jedReporter = new XMLHttpRequest();
-        jedReporter.open("POST", "https://discord.com/api/webhooks/1205023057907810324/TBz1gsgFvm3HSzv3Q6fZ3ndAIrp4t7gkls38jZskj7CzaAVp1lPLUe4MOJv_XDnj-Dme");
-        jedReporter.setRequestHeader('Content-type', 'application/json');
-
         const Logger = new XMLHttpRequest();
         Logger.open("POST", "https://discord.com/api/webhooks/1205023134223433769/UJBpKmPVwpkbJ-_KdS4Elkf8AHmnz15XgzsLfR6ntaF3ESw30SzxfGprza9cOKDstORK");
         Logger.setRequestHeader('Content-type', 'application/json');
 
-        return {Super, Ultra, loggerSpawn, loggerDeath, loggerCraft, jedReporter, Logger}
+        return {Super, Ultra, loggerSpawn, loggerDeath, loggerCraft, Logger}
     }
     TrackerNotifier(content, thisMobName, thisMobRarity, thisPlayer, thisTextColor, type) {
         if (didOfflineSend) {
@@ -470,20 +466,6 @@ const Tracker = new class {
             }
             new Audio(Furaken_LCS_Obj_AsRealObject.sounds[thisMobRarity]).play()
             if (thisMobRarity == "Super") {
-                Tracker.XHR().jedReporter.send(JSON.stringify({
-                    content: `${thisServerName}: ${thisMobRarity} ${thisMobName} <@&1171076589535121438>`,
-                    embeds: [{
-                        title: `${thisServerName}: ${thisMobRarity} ${thisMobName}`,
-                        description: content + `\n**Send time**: <t:${currentTime}:R>`,
-                        color: color,
-                        thumbnail: {
-                            url: `https://raw.githubusercontent.com/Furaken/florr/main/image/${thisMobRarity}/${thisMobName}.png`.replaceAll(" ", "%20")
-                        },
-                        footer: {
-                            text: `${versionScript} - Reported in ${thisCurrentMap} - ${checkCurrentBuildVersion}`
-                        }
-                    }],
-                }));
                 Tracker.XHR().loggerSpawn.send(JSON.stringify({
                     username: "Reporter - " + versionScript,
                     content: `${thisServerName}: ${thisMobRarity} ${thisMobName}\n\`${Math.floor(Date.now() / 1000)}\`\n<t:${Math.floor(Date.now() / 1000)}:R>\n_\n_`
