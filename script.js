@@ -1,5 +1,5 @@
-var allAvailableServers = 17 - 1,
-    versionScript = "4.2.3",
+var allAvailableServers = 5,
+    versionScript = "4.2.4",
     customAfkMsg = [
         "转圈圈",
         "转圈圈喽~",
