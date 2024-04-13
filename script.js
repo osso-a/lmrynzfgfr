@@ -1,5 +1,5 @@
 var allAvailableServers = 17 - 1,
-    versionScript = "4.2.2",
+    versionScript = "4.2.3",
     customAfkMsg = [
         "转圈圈",
         "转圈圈喽~",
@@ -185,6 +185,13 @@ var allAvailableServers = 17 - 1,
         }
     },
     availableMaps = [
+        "Ant Hell",
+        "Desert",
+        "Ellne",
+        "Garden",
+        "Jungle",
+        "Ocean",
+        "Sewers",
         "Centralia",
         "Centralia Fields 1",
         "Centralia Fields 2",
