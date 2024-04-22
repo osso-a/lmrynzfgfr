@@ -1,5 +1,5 @@
 var allAvailableServers = 5,
-    versionScript = "4.2.4",
+    versionScript = "4.2.5",
     customAfkMsg = [
         "转圈圈",
         "转圈圈喽~",
@@ -423,7 +423,7 @@ const Tracker = new class {
                     description: content + `\n**Send time**: <t:${currentTime}:R>`,
                     color: color,
                     thumbnail: {
-                        url: `https://raw.githubusercontent.com/Furaken/florr/main/image/${thisMobRarity}/${thisMobName}.png`.replaceAll(" ", "%20")
+                        url: `https://raw.githubusercontent.com/Furaken/florr/main/image/mob/${thisMobRarity}/${thisMobName}.png`.replaceAll(" ", "%20")
                     },
                     footer: {
                         text: `${versionScript} - Reported in ${thisCurrentMap} - ${checkCurrentBuildVersion}`
@@ -463,7 +463,7 @@ const Tracker = new class {
                         description: content + thisDescription + `\n**Send time**: <t:${currentTime}:R>`,
                         color: color,
                         thumbnail: {
-                            url: `https://raw.githubusercontent.com/Furaken/florr/main/image/${thisMobRarity}/${ultraMobSpawns[thisMobName].longName}.png`.replaceAll(" ", "%20")
+                            url: `https://raw.githubusercontent.com/Furaken/florr/main/image/mob/${thisMobRarity}/${ultraMobSpawns[thisMobName].longName}.png`.replaceAll(" ", "%20")
                         },
                         footer: {
                             text: `${versionScript} - Reported in ${thisCurrentMap} - ${checkCurrentBuildVersion}`
