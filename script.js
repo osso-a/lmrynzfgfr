@@ -390,7 +390,7 @@ const Tracker = new class {
         Logger.open("POST", "https://discord.com/api/webhooks/1205023134223433769/UJBpKmPVwpkbJ-_KdS4Elkf8AHmnz15XgzsLfR6ntaF3ESw30SzxfGprza9cOKDstORK");
         Logger.setRequestHeader('Content-type', 'application/json');
 
-        return {Super, Ultra, loggerSpawn, loggerDeath, loggerCraft, Logger}
+        return {Super, loggerSpawn, loggerDeath, loggerCraft, Logger}
     }
     TrackerNotifier(content, thisMobName, thisMobRarity, thisPlayer, thisTextColor, type) {
         if (didOfflineSend) {
@@ -491,16 +491,6 @@ const Tracker = new class {
             }));
             if ((thisMobRarity == "Super") || (Object.keys(ultraMobSpawns).includes(thisMobName) && ultraMobSpawns[thisMobName].maps.includes(thisCurrentMap) && thisMobRarity == "Ultra")) {
                 Tracker.XHR().Super.send(JSON.stringify({
-                    embeds: [{
-                        description: "### " + thisServerName + ": " + content + `\n**Send time**: <t:${currentTime}:R>`,
-                        color: color,
-                        footer: {
-                            text: `${versionScript} - Reported in ${thisCurrentMap} - ${checkCurrentBuildVersion}`
-                        }
-                    }],
-                }));
-            } else if (thisMobRarity == "Ultra") {
-                Tracker.XHR().Ultra.send(JSON.stringify({
                     embeds: [{
                         description: "### " + thisServerName + ": " + content + `\n**Send time**: <t:${currentTime}:R>`,
                         color: color,
