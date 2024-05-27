@@ -1,5 +1,5 @@
 var allAvailableServers = 5,
-    versionScript = "4.2.6",
+    versionScript = "4.2.7",
     customAfkMsg = [
         "转圈圈",
         "转圈圈喽~",
@@ -678,12 +678,14 @@ for (const { prototype } of getFurakenCanvas()) {
                 alert(AlertMessages)
             }
         }
+        /*
         if (!getPlayerNamesArray.includes('Ready')) getPlayerNamesArray.push(text)
         else {
             if (getPlayerNamesArray[getPlayerNamesArray.length - 2].includes(" ") && forceThisPlayerName == "") getPlayerNamesArray.splice(-2, 1)
             else forceThisPlayerName = getPlayerNamesArray[getPlayerNamesArray.length - 2] + Furaken_LCS_Obj_AsRealObject.thisAccountCode
         }
         if (getPlayerNamesArray.length > 20) getPlayerNamesArray.shift()
+        */
         return this.newAlternativeMeaText(thisTrackerFunction(text, "#000000", true))
     }
 }
