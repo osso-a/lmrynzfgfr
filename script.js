@@ -1,5 +1,6 @@
+
 var allAvailableServers = 6,
-    versionScript = "5.0.3",
+    versionScript = "5.0.4",
     uniqueSpawnMessages = {
         "Cactus": "A tower of thorns rises from the sands...",
         "Hel Beetle": "You sense ominous vibrations coming from a different realm...",
@@ -85,12 +86,6 @@ const Tracker = new class {
     }
     TrackerNotifier(content, thisMobName, thisMobRarity, thisPlayer, thisTextColor, type) {
         if (thisTextColor == "#ffffff" || thisTextColor == "#000000") return
-        var thisMapObj = servers["Sewers, Hel".split(", ").includes(thisCurrentMap) ? "Sewers, Hel" : thisCurrentMap]
-        for (const server in thisMapObj) {
-            if (Object.keys(thisMapObj[server]).includes(wssUrl.slice(6, -12))) {
-                thisServerName = server
-            }
-        }
         var color = parseInt(thisTextColor.slice(1), 16);
         var currentTime = Math.floor(Date.now() / 1000);
         if (type == "Spawn") {
@@ -259,6 +254,12 @@ setInterval(function() {
     if (wssURLArr.length > 2) wssURLArr.splice(2)
     if (wssURLArr[wssURLArr.length - 1] != wssURLArr[0]) {
         updateServers()
+        var thisMapObj = servers[thisCurrentMap]
+        for (const server in thisMapObj) {
+            if (Object.keys(thisMapObj[server]).includes(wssUrl.slice(6, -12))) {
+                thisServerName = server
+            }
+        }
     }
     if (currentBuildVersion == null) {
         unsafeWindow.dispatchEvent(new KeyboardEvent('keydown', {
