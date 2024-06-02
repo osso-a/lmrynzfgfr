@@ -1,5 +1,5 @@
 var allAvailableServers = 5,
-    versionScript = "5.0.0",
+    versionScript = "5.0.1",
     uniqueSpawnMessages = {
         "Cactus": "A tower of thorns rises from the sands...",
         "Hel Beetle": "You sense ominous vibrations coming from a different realm...",
@@ -260,7 +260,7 @@ setInterval(function() {
     if (wssURLArr[wssURLArr.length - 1] != wssURLArr[0]) {
         updateServers()
     }
-    if (currentBuildVersion == "") {
+    if (currentBuildVersion == null) {
         unsafeWindow.dispatchEvent(new KeyboardEvent('keydown', {
             code: 'Semicolon',
             key: ';',
