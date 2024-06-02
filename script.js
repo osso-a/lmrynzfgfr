@@ -1,5 +1,5 @@
 var allAvailableServers = 6,
-    versionScript = "5.0.2",
+    versionScript = "5.0.3",
     uniqueSpawnMessages = {
         "Cactus": "A tower of thorns rises from the sands...",
         "Hel Beetle": "You sense ominous vibrations coming from a different realm...",
@@ -46,16 +46,16 @@ function updateServers() {
     }
 }
 var servers = {},
-    matrixs = ["Garden", "Desert", "Ocean", "Jungle", "Ant Hell", "Sewers, Hel"],
-    colors = [0x1EA761, 0xD4C6A5, 0x5785BA, 0x3AA049, 0x8E603F, 0x752F08],
+    matrixs = ["Garden", "Desert", "Ocean", "Jungle", "Ant Hell", "Hel", "Sewers"],
+    colors = [0x1EA761, 0xD4C6A5, 0x5785BA, 0x3AA049, 0x8E603F, 0x8F3838, 0x666633],
     allAvailableMaps = {
         "Garden": 0x1EA761,
         "Desert": 0xE0D1AF,
         "Ocean": 0x66869E,
         "Jungle": 0x3AA049,
         "Ant Hell": 0x8E603F,
-        "Sewers": 0x752F08,
-        "Hel": 0x8F3838
+        "Hel": 0x8F3838,
+        "Sewers": 0x666633,
     }
 updateServers()
 setInterval(() => {
