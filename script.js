@@ -1,5 +1,5 @@
-var allAvailableServers = 5,
-    versionScript = "5.0.1",
+var allAvailableServers = 6,
+    versionScript = "5.0.2",
     uniqueSpawnMessages = {
         "Cactus": "A tower of thorns rises from the sands...",
         "Hel Beetle": "You sense ominous vibrations coming from a different realm...",
