@@ -1,5 +1,16 @@
+// ==UserScript==
+// @name         florr.io | ReporterTest
+// @namespace    Furaken
+// @version      5.0.6
+// @description  $$$$$$$$$
+// @author       Furaken
+// @match        https://florr.io/*
+// @grant        unsafeWindow
+// @grant        GM_xmlhttpRequest
+// ==/UserScript==
+
 var allAvailableServers = 6,
-    versionScript = "5.0.5",
+    versionScript = "5.0.6",
     uniqueSpawnMessages = {
         "Cactus": "A tower of thorns rises from the sands...",
         "Hel Beetle": "You sense ominous vibrations coming from a different realm...",
@@ -84,7 +95,7 @@ const Tracker = new class {
                 color = 0xDBD74B
             }
             Tracker.XHR()[thisMobRarity].send(JSON.stringify({
-                //tts: true,
+                tts: true,
                 content: `${thisServerName}: ${thisMobName} ${discordSuperRoleId}`,
                 embeds: [{
                     title: `${thisServerName}: ${thisMobRarity} ${thisMobName}`,
