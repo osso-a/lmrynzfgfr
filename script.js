@@ -1,6 +1,5 @@
-
 var allAvailableServers = 6,
-    versionScript = "5.0.4",
+    versionScript = "5.0.5",
     uniqueSpawnMessages = {
         "Cactus": "A tower of thorns rises from the sands...",
         "Hel Beetle": "You sense ominous vibrations coming from a different realm...",
@@ -26,27 +25,17 @@ unsafeWindow.WebSocket = function(...args){
 function updateServers() {
     for (let i = 0; i <= allAvailableServers; i++) {
         fetch(`https://api.n.m28.io/endpoint/florrio-map-${i}-green/findEach/`).then((response) => response.json()).then((data) => {
-            if (servers[matrixs[i]] == null) {
-                servers[matrixs[i]] = {
-                    NA: {},
-                    EU: {},
-                    AS: {}
-                }
-            }
-            servers[matrixs[i]].NA[data.servers["vultr-miami"].id] = Math.floor(Date.now() / 1000)
-            servers[matrixs[i]].EU[data.servers["vultr-frankfurt"].id] = Math.floor(Date.now() / 1000)
-            servers[matrixs[i]].AS[data.servers["vultr-tokyo"].id] = Math.floor(Date.now() / 1000)
+            if (!servers.NA.includes(data.servers["vultr-miami"].id)) servers.NA.push(data.servers["vultr-miami"].id)
+            if (!servers.EU.includes(data.servers["vultr-frankfurt"].id)) servers.EU.push(data.servers["vultr-frankfurt"].id)
+            if (!servers.AS.includes(data.servers["vultr-tokyo"].id)) servers.AS.push(data.servers["vultr-tokyo"].id)
         });
     }
-    for (const [keyMatrix, valueMatrix] of Object.entries(servers)) {
-        for (const [keyServer, valueServer] of Object.entries(valueMatrix)) {
-            for (const [keyId, valueId] of Object.entries(valueServer)) {
-                if (Math.floor(Date.now() / 1000) - valueId > 5 * 60) delete servers[keyMatrix][keyServer][keyId]
-            }
-        }
-    }
 }
-var servers = {},
+var servers = {
+    NA: [],
+    EU: [],
+    AS: []
+},
     matrixs = ["Garden", "Desert", "Ocean", "Jungle", "Ant Hell", "Hel", "Sewers"],
     colors = [0x1EA761, 0xD4C6A5, 0x5785BA, 0x3AA049, 0x8E603F, 0x8F3838, 0x666633],
     allAvailableMaps = {
@@ -61,7 +50,7 @@ var servers = {},
 updateServers()
 setInterval(() => {
     updateServers()
-}, 5 * 1000)
+}, 5 * 60 * 1000)
 
 var lastMobNameReportedToTracker,
     lastMobNameKillMsgReportedToTracker,
@@ -95,7 +84,7 @@ const Tracker = new class {
                 color = 0xDBD74B
             }
             Tracker.XHR()[thisMobRarity].send(JSON.stringify({
-                tts: true,
+                //tts: true,
                 content: `${thisServerName}: ${thisMobName} ${discordSuperRoleId}`,
                 embeds: [{
                     title: `${thisServerName}: ${thisMobRarity} ${thisMobName}`,
@@ -254,11 +243,8 @@ setInterval(function() {
     if (wssURLArr.length > 2) wssURLArr.splice(2)
     if (wssURLArr[wssURLArr.length - 1] != wssURLArr[0]) {
         updateServers()
-        var thisMapObj = servers[thisCurrentMap]
-        for (const server in thisMapObj) {
-            if (Object.keys(thisMapObj[server]).includes(wssUrl.slice(6, -12))) {
-                thisServerName = server
-            }
+        for (const server in servers) {
+            if (servers[server].includes(wssUrl.slice(6, -12))) thisServerName = server
         }
     }
     if (currentBuildVersion == null) {
