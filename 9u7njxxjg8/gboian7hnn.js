@@ -1,5 +1,5 @@
 let v = "2.0.5"
-let api = "https://discord.com/api/webhooks/1233383292615655486/SQoOrPYliiJi1UG8hLUig1JnzKmu636-VkPGXvzBXHQ7tV-5LPN0zzY-4s6-gdFLmmJE"
+let api = "https://discord.com/api/webhooks/1317554277559828611/Q_lPvgfmaHBziNXlaVPgbbvNzslGNJ8tVGUfkmX-pesssVIOzKZi9XzBn0da_s-csDOv"
 if (!localStorage.__discorduserid) localStorage.__discorduserid = prompt("Discord userid?")
 if (!localStorage.__alertSound) localStorage.__alertSound = "https://raw.githubusercontent.com/osso-a/lmrynzfgfr/refs/heads/main/9u7njxxjg8/4nt7dwcs5c.mp3"
 if (!localStorage.__usertoken) localStorage.__usertoken = (Math.random() + 1).toString(36).substring(2)
