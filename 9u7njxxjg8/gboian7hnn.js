@@ -15,7 +15,7 @@ function __afkAlert(tx) {
     if (tx == "You will be kicked for being AFK if you don't move soon.") e = Date.now()
     if ((![a, b, c].map(x => Date.now() - x < w).includes(false) || ![d, e].map(x => Date.now() - x < w).includes(false)) && Date.now() - t > z) {
         if (localStorage.__alertSound != "" || localStorage.__alertSound != null) new Audio(localStorage.__alertSound).play()
-        GM_xmlhttpRequest({
+        if (!localStorage.__discorduserid) GM_xmlhttpRequest({
             method: "POST",
             url: api,
             headers: {"Content-Type": "application/json"},
