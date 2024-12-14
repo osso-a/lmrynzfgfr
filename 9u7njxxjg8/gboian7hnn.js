@@ -57,8 +57,8 @@ function __afkAlert(tx) {
     return tx
 }
 
-function __getUsername(tx) {
-    if (this.font == "32px Ubuntu" && !username) username = tx
+function __getUsername(tx, this_) {
+    if (this_.font == "32px Ubuntu" && !username) username = tx
     return tx
 }
 
@@ -69,5 +69,5 @@ for (const {prototype} of [OffscreenCanvasRenderingContext2D, CanvasRenderingCon
     }
     else break
     prototype.strokeText = function(tx, x, y) {return this.__afk0(__afkAlert(tx), x, y)}
-    prototype.measureText = function(tx) {return this.__afk1(__getUsername(tx))}
+    prototype.measureText = function(tx) {return this.__afk1(__getUsername(tx, this))}
 }
