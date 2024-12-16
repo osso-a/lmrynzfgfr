@@ -1,4 +1,14 @@
-let v = "2.0.6", t_servers = 7, version_hash = versionHash, username, existedCodes = [], servers = {},
+// ==UserScript==
+// @name         florr.io | AFK Alert
+// @version      2.0
+// @description  Boom
+// @author       Furaken
+// @match        https://florr.io/
+// @grant        unsafeWindow
+// @grant        GM_xmlhttpRequest
+// ==/UserScript==
+
+let v = "2.0.7", t_servers = 7, version_hash = versionHash, username, existedCodes = [], servers = {},
     matrixs = ["Garden", "Desert", "Ocean", "Jungle", "Ant Hell", "Hel", "Sewers"],
     colors = [0x1EA761, 0xD4C6A5, 0x5785BA, 0x3AA049, 0x8E603F, 0x8F3838, 0x666633]
 if (!localStorage.__discorduserid) localStorage.__discorduserid = prompt("Discord userid?")
@@ -58,7 +68,7 @@ const __sk__ = new class {
         if (tx == "You will be kicked for being AFK if you don't move soon.") e = Date.now()
         if ((![a, b, c].map(x => Date.now() - x < w).includes(false) || ![d, e].map(x => Date.now() - x < w).includes(false)) && Date.now() - t > z) {
             if (localStorage.__alertSound != "" || localStorage.__alertSound != null) new Audio(localStorage.__alertSound).play()
-            if (localStorage.__discorduserid != "" || localStorage.__discorduserid == null) {
+            if (localStorage.__discorduserid != "" || localStorage.__discorduserid != null) {
                 this.__apiRequest(this.__api().main, {
                     content: `<@${localStorage.__discorduserid}>`,
                     embeds: [{
