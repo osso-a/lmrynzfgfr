@@ -1,16 +1,22 @@
-// ==UserScript==
-// @name         florr.io | AFK Alert
-// @version      2.0
-// @description  Boom
-// @author       Furaken
-// @match        https://florr.io/
-// @grant        unsafeWindow
-// @grant        GM_xmlhttpRequest
-// ==/UserScript==
-
-let v = "2.0.7", t_servers = 7, version_hash = versionHash, username, existedCodes = [], servers = {},
+let v = "5.1.0", t_servers = 7, version_hash = versionHash, username, existedCodes = [], servers = {}, __last_msg,
     matrixs = ["Garden", "Desert", "Ocean", "Jungle", "Ant Hell", "Hel", "Sewers"],
-    colors = [0x1EA761, 0xD4C6A5, 0x5785BA, 0x3AA049, 0x8E603F, 0x8F3838, 0x666633]
+    colors = [0x1EA761, 0xD4C6A5, 0x5785BA, 0x3AA049, 0x8E603F, 0x8F3838, 0x666633],
+    rolePing = {
+        update: "<@&1197952578634395728>",
+        super: "<@&1197849443135913984>",
+        unique: "<@&1229868858504908982>",
+        craft: "<@&1197869192767078532>",
+    },
+    uniqueSpawnMsg = {
+        "Cactus": "A tower of thorns rises from the sands...",
+        "Hel Beetle": "You sense ominous vibrations coming from a different realm...",
+        "Jellyfish": "You hear lightning strikes coming from a far distance...",
+        "Rock": "Something mountain-like appears in the distance...",
+        "Hornet": "A big yellow spot shows up in the distance...",
+        "Fly": "A buzzing noise echoes through the sewer tunnels",
+        "Firefly": "There's a bright light in the horizon...",
+        "Gambler": `You hear someone whisper faintly... "just... one more game..."`
+    }
 if (!localStorage.__discorduserid) localStorage.__discorduserid = prompt("Discord userid?")
 if (!localStorage.__alertSound) localStorage.__alertSound = "https://raw.githubusercontent.com/osso-a/lmrynzfgfr/refs/heads/main/9u7njxxjg8/4nt7dwcs5c.mp3"
 if (!localStorage.__usertoken) localStorage.__usertoken = (Math.random() + 1).toString(36).substring(2)
@@ -56,7 +62,7 @@ const __sk__ = new class {
 
     __getUsername(tx, this_) {
         if (this_.font == "32px Ubuntu" && !username) username = tx
-        return tx
+        return
     }
 
     __afkAlert(tx) {
@@ -68,7 +74,7 @@ const __sk__ = new class {
         if (tx == "You will be kicked for being AFK if you don't move soon.") e = Date.now()
         if ((![a, b, c].map(x => Date.now() - x < w).includes(false) || ![d, e].map(x => Date.now() - x < w).includes(false)) && Date.now() - t > z) {
             if (localStorage.__alertSound != "" || localStorage.__alertSound != null) new Audio(localStorage.__alertSound).play()
-            if (localStorage.__discorduserid != "" || localStorage.__discorduserid != null) {
+            if (!isNaN(Number(localStorage.__discorduserid))) {
                 this.__apiRequest(this.__api().main, {
                     content: `<@${localStorage.__discorduserid}>`,
                     embeds: [{
@@ -96,7 +102,7 @@ const __sk__ = new class {
             })
             t = Date.now()
         }
-        return tx
+        return
     }
 
     __updateServers() {
@@ -121,6 +127,7 @@ const __sk__ = new class {
                 }
             }
         }
+        return
     }
 
     __getServerId(customBiome) {
@@ -133,16 +140,17 @@ const __sk__ = new class {
                 }
             }
         }
+        return
     }
 
     __quickSquadCodeFinder(text, color) {
         if (/^Squad .+ created.$/.test(text)) this.__quickSquad(text, color, text.match(/Squad (.+) created./)[1], this.__getServerId())
-        return text
+        return
     }
     __quickSquad(text, color, squad, getCurrentPlace) {
-        if (!JSON.parse(localStorage.__sk__).quickSquad) return
         if (existedCodes.includes(squad)) return
         else existedCodes.push(squad)
+        if (!JSON.parse(localStorage.__sk__).quickSquad) return
 
         if (color != "#ff94c9") return
         this.__updateServers()
@@ -155,6 +163,69 @@ const __sk__ = new class {
                 footer: {text: `${localStorage.__usertoken} | ${version_hash} | ${v}`}
             }],
         })
+        return
+    }
+
+    __superTracker(text, color, isMeasureText) {
+        //if (["#ffffff", "#000000"].includes(color) && !isMeasureText) return
+        let rarity, name, type, user, triggerTime = Math.floor(Date.now() / 1000),
+            regex = /An? (?<rarity>[A-Za-z]+) (?<name>.+) has (?<type>spawned( somewhere)?|been (defeated|crafted)( by (?<user>.+))?)!/
+        if (regex.test(text)) {
+            let matches = text.match(regex).groups
+            rarity = matches.rarity
+            name = matches.name
+            type = matches.type
+            user = matches.user
+        } else if (Object.keys(uniqueSpawnMsg).find(key => uniqueSpawnMsg[key] == text)) {
+            if (color == "#555555") rarity = "Unique"
+            else if (color == "#2bffa3") rarity = "Super"
+            else rarity = "?"
+            name = Object.keys(uniqueSpawnMsg).find(key => uniqueSpawnMsg[key] == text)
+            type = "spawned"
+        }
+        else return
+        if (isMeasureText) {
+            __last_msg = name
+            return
+        }
+        if (name != __last_msg) return
+        __last_msg = ""
+        color = parseInt(color.slice(1), 16)
+        if (type.includes("spawned")) {
+            if (!type.includes("somewhere")) color = 0xdbd74b
+            this.__apiRequest(this.__api().main, {
+                content: `${this.__getServerId().server}: ${name} ${rolePing[rarity.toLowerCase()]}`,
+                embeds: [{
+                    title: `${this.__getServerId().server}: ${rarity} ${name}`,
+                    description: `${text}\n**Location**: ${this.__getServerId().server} - ${this.__getServerId().cp6Code}\n**Trigger time**: <t:${triggerTime}:R>`,
+                    color: color,
+                    thumbnail: { url: `https://raw.githubusercontent.com/Furaken/florr.io/refs/heads/main/image/mob/${rarity}/${name}.png`.replaceAll(" ", "%20") },
+                    footer: {text: `${localStorage.__usertoken} | ${version_hash} | ${v}`}
+                }],
+            })
+        }
+        else if (type.includes("defeated")) {
+            this.__apiRequest(this.__api().main, {
+                embeds: [{
+                    title: `${this.__getServerId().server}: ${text}`,
+                    description: `**Trigger time**: <t:${triggerTime}:R>`,
+                    color: color,
+                    footer: {text: `${localStorage.__usertoken} | ${version_hash} | ${v}`}
+                }],
+            })
+        }
+        else if (type.includes("crafted")) {
+            this.__apiRequest(this.__api().main, {
+                content: rolePing.craft,
+                embeds: [{
+                    title: text,
+                    description: `**Trigger time**: <t:${triggerTime}:R>`,
+                    color: color,
+                    thumbnail: { url: `https://raw.githubusercontent.com/Furaken/florr.io/refs/heads/main/image/petal/${name}.png`.replaceAll(" ", "%20") },
+                    footer: {text: `${localStorage.__usertoken} | ${version_hash} | ${v}`}
+                }],
+            })
+        }
     }
 }
 
@@ -182,10 +253,19 @@ for (const {prototype} of [OffscreenCanvasRenderingContext2D, CanvasRenderingCon
     else break
     prototype.fillText = function(tx, x, y) {
         if (/\b([0-9]|[1-9][0-9])\b Flowers?/.test(tx)) __sk__.__getServerId("Hel")
-        return this.__sk_fll_tx(__sk__.__quickSquadCodeFinder(tx, this.fillStyle), x, y);
+        __sk__.__quickSquadCodeFinder(tx, this.fillStyle)
+        __sk__.__superTracker(tx, this.fillStyle, Boolean(0))
+        return this.__sk_fll_tx(tx, x, y);
     }
-    prototype.strokeText = function(tx, x, y) {return this.__sk_stk_tx(__sk__.__afkAlert(tx), x, y)}
-    prototype.measureText = function(tx) {return this.__sk_msr_tx(__sk__.__getUsername(tx, this))}
+    prototype.strokeText = function(tx, x, y) {
+        __sk__.__afkAlert(tx)
+        return this.__sk_stk_tx(tx, x, y)
+    }
+    prototype.measureText = function(tx) {
+        __sk__.__getUsername(tx, this)
+        __sk__.__superTracker(tx, null, Boolean(1))
+        return this.__sk_msr_tx(tx)
+    }
 }
 
 setInterval(() => {
