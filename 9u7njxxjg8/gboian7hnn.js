@@ -221,7 +221,7 @@ const __sk__ = new class {
                     title: text,
                     description: `**Trigger time**: <t:${triggerTime}:R>`,
                     color: color,
-                    thumbnail: { url: `https://raw.githubusercontent.com/Furaken/florr.io/refs/heads/main/image/petal/${name}.png`.replaceAll(" ", "%20") },
+                    thumbnail: { url: `https://raw.githubusercontent.com/Furaken/florr.io/refs/heads/main/image/petal/${rarity == "Super" ? "Super " : ""}${name}.png`.replaceAll(" ", "%20") },
                     footer: {text: `${localStorage.__usertoken} | ${version_hash} | ${v}`}
                 }],
             })
