@@ -176,7 +176,7 @@ const __sk__ = new class {
     }
 
     __superTracker(text, color, isMeasureText) {
-        //if (["#ffffff", "#000000"].includes(color) && !isMeasureText) return
+        if (["#ffffff", "#000000"].includes(color) && !isMeasureText) return
         let rarity, name, type, user, triggerTime = Math.floor(Date.now() / 1000),
             regex = /An? (?<rarity>[A-Za-z]+) (?<name>.+) has (?<type>spawned( somewhere)?|been (defeated|crafted)( by (?<user>.+))?)!/
         if (regex.test(text)) {
