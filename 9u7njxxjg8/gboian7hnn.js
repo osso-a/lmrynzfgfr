@@ -1,11 +1,11 @@
-let v = "5.1.0", t_servers = 7, version_hash = versionHash, username, existedCodes = [], servers = {}, __last_msg,
+let v = "5.1.1", t_servers = 7, version_hash = versionHash, username, existedCodes = [], servers = {}, __last_msg,
     matrixs = ["Garden", "Desert", "Ocean", "Jungle", "Ant Hell", "Hel", "Sewers"],
     colors = [0x1EA761, 0xD4C6A5, 0x5785BA, 0x3AA049, 0x8E603F, 0x8F3838, 0x666633],
     rolePing = {
-        update: "<@&1197952578634395728>",
-        super: "<@&1197849443135913984>",
-        unique: "<@&1229868858504908982>",
-        craft: "<@&1197869192767078532>",
+        Update: "<@&1197952578634395728>",
+        Super: "<@&1197849443135913984>",
+        Unique: "<@&1229868858504908982>",
+        Craft: "<@&1197869192767078532>",
     },
     uniqueSpawnMsg = {
         "Cactus": "A tower of thorns rises from the sands...",
@@ -79,9 +79,12 @@ const __sk__ = new class {
                     content: `<@${localStorage.__discorduserid}>`,
                     embeds: [{
                         title: `AFK Check ✅`,
-                        description: `**Send Time**: <t:${Math.floor(Date.now() / 1000)}:R>`,
+                        fields: [
+                            { name: "Trigger time", value: `<t:${Math.floor(Date.now() / 1000)}:R>`, inline: false},
+                            { name: "Version", value: version_hash, inline: false},
+                        ],
                         color: 0xdbd74b,
-                        footer: {text: `${localStorage.__usertoken} | ${version_hash} | ${v}`}
+                        footer: {text: `${localStorage.__usertoken} | ${v}`}
                     }],
                 })
             }
@@ -144,10 +147,10 @@ const __sk__ = new class {
     }
 
     __quickSquadCodeFinder(text, color) {
-        if (/^Squad .+ created.$/.test(text)) this.__quickSquad(text, color, text.match(/Squad (.+) created./)[1], this.__getServerId())
+        if (/^Squad .+ created.$/.test(text)) this.__quickSquad(text, color, text.match(/Squad (.+) created./)[1])
         return
     }
-    __quickSquad(text, color, squad, getCurrentPlace) {
+    __quickSquad(text, color, squad) {
         if (existedCodes.includes(squad)) return
         else existedCodes.push(squad)
         if (!JSON.parse(localStorage.__sk__).quickSquad) return
@@ -157,17 +160,23 @@ const __sk__ = new class {
         navigator.clipboard.writeText(`/squad-join ${squad}`)
         this.__apiRequest(this.__api().main, {
             embeds: [{
-                title: `${username}'s squad: ${getCurrentPlace.biome}`,
-                description: `### ${getCurrentPlace.server} - ${getCurrentPlace.cp6Code}\n\`\`\`\n/squad-join ${squad}\`\`\`\n**Send time**: <t:${Math.floor(Date.now() / 1000)}:R>`,
-                color: colors[matrixs.indexOf(getCurrentPlace.biome)],
-                footer: {text: `${localStorage.__usertoken} | ${version_hash} | ${v}`}
+                title: `${username}'s squad: ${this.__getServerId().biome}`,
+                description: "```/squad-join " + squad + "```",
+                fields: [
+                    { name: "Send location", value: `${this.__getServerId().server} - ${this.__getServerId().cp6Code}`, inline: true},
+                    { name: "Squad code", value: squad, inline: true},
+                    { name: "Trigger time", value: `<t:${Math.floor(Date.now() / 1000)}:R>`, inline: false},
+                    { name: "Version", value: version_hash, inline: false},
+                ],
+                color: colors[matrixs.indexOf(this.__getServerId().biome)],
+                footer: {text: `${localStorage.__usertoken} | ${v}`}
             }],
         })
         return
     }
 
     __superTracker(text, color, isMeasureText) {
-        if (["#ffffff", "#000000"].includes(color) && !isMeasureText) return
+        //if (["#ffffff", "#000000"].includes(color) && !isMeasureText) return
         let rarity, name, type, user, triggerTime = Math.floor(Date.now() / 1000),
             regex = /An? (?<rarity>[A-Za-z]+) (?<name>.+) has (?<type>spawned( somewhere)?|been (defeated|crafted)( by (?<user>.+))?)!/
         if (regex.test(text)) {
@@ -194,13 +203,18 @@ const __sk__ = new class {
         if (type.includes("spawned")) {
             if (!type.includes("somewhere")) color = 0xdbd74b
             this.__apiRequest(this.__api().main, {
-                content: `${this.__getServerId().server}: ${name} ${rolePing[rarity.toLowerCase()]}`,
+                content: `${this.__getServerId().server}: ${name} ${rolePing[rarity]}`,
                 embeds: [{
                     title: `${this.__getServerId().server}: ${rarity} ${name}`,
-                    description: `${text}\n**Location**: ${this.__getServerId().server} - ${this.__getServerId().cp6Code}\n**Trigger time**: <t:${triggerTime}:R>`,
+                    description: text,
+                    fields: [
+                        { name: "Send location", value: `${this.__getServerId().server} - ${this.__getServerId().cp6Code}`, inline: true},
+                        { name: "Trigger time", value: `<t:${triggerTime}:R>`, inline: true},
+                        { name: "Version", value: version_hash, inline: false},
+                    ],
                     color: color,
                     thumbnail: { url: `https://raw.githubusercontent.com/Furaken/florr.io/refs/heads/main/image/mob/${rarity}/${name}.png`.replaceAll(" ", "%20") },
-                    footer: {text: `${localStorage.__usertoken} | ${version_hash} | ${v}`}
+                    footer: {text: `${localStorage.__usertoken} | ${v}`}
                 }],
             })
         }
@@ -208,21 +222,27 @@ const __sk__ = new class {
             this.__apiRequest(this.__api().main, {
                 embeds: [{
                     title: `${this.__getServerId().server}: ${text}`,
-                    description: `**Trigger time**: <t:${triggerTime}:R>`,
+                    fields: [
+                        { name: "Trigger time", value: `<t:${triggerTime}:R>`, inline: true},
+                        { name: "Version", value: version_hash, inline: false},
+                    ],
                     color: color,
-                    footer: {text: `${localStorage.__usertoken} | ${version_hash} | ${v}`}
+                    footer: {text: `${localStorage.__usertoken} | ${v}`}
                 }],
             })
         }
         else if (type.includes("crafted")) {
             this.__apiRequest(this.__api().main, {
-                content: rolePing.craft,
+                content: rolePing.Craft,
                 embeds: [{
                     title: text,
-                    description: `**Trigger time**: <t:${triggerTime}:R>`,
+                    fields: [
+                        { name: "Trigger time", value: `<t:${triggerTime}:R>`, inline: true},
+                        { name: "Version", value: version_hash, inline: false},
+                    ],
                     color: color,
-                    thumbnail: { url: `https://raw.githubusercontent.com/Furaken/florr.io/refs/heads/main/image/petal/${rarity == "Super" ? "Super " : ""}${name}.png`.replaceAll(" ", "%20") },
-                    footer: {text: `${localStorage.__usertoken} | ${version_hash} | ${v}`}
+                    thumbnail: { url: `https://raw.githubusercontent.com/Furaken/florr.io/refs/heads/main/image/petal/${rarity == "Super" && ["Poker Chip", "Corruption"].includes(name) ? "Super " : ""}${name}.png`.replaceAll(" ", "%20") },
+                    footer: {text: `${localStorage.__usertoken} | ${v}`}
                 }],
             })
         }
@@ -235,11 +255,11 @@ if (version_hash != localStorage.__versionHash) {
     localStorage.__versionHash = version_hash
     alert(`New version\n${version_hash}`)
     __sk__.__apiRequest(__sk__.__api().main, {
-        content: `<@&1197952578634395728>`,
+        content: rolePing.Update,
         embeds: [{
             title: `New version`,
             description: `\`${version_hash}\``,
-            footer: {text: `${localStorage.__usertoken} | ${version_hash} | ${v}`}
+            footer: {text: `${localStorage.__usertoken} | ${v}`}
         }],
     })
 }
