@@ -1,4 +1,4 @@
-let v = "5.1.2", t_servers = 7, version_hash = versionHash, username, existedCodes = [], servers = {}, __last_msg, afkCheckCounts, currentBiome,
+let v = "5.1.3", t_servers = 7, version_hash = versionHash, username, existedCodes = [], servers = {}, __last_msg, afkCheckCounts, currentBiome,
     matrixs = ["Garden", "Desert", "Ocean", "Jungle", "Ant Hell", "Hel", "Sewers"],
     colors = [0x1EA761, 0xD4C6A5, 0x5785BA, 0x3AA049, 0x8E603F, 0x8F3838, 0x666633],
     rolePing = {
@@ -82,7 +82,7 @@ const __sk__ = new class {
                         title: `AFK Check ✅`,
                         fields: [
                             { name: "AFK Checks of this session", value: afkCheckCounts[0], inline: true},
-                            { name: "Playtime of this session", value: afkCheckCounts[1], inline: true},
+                            { name: "Start time of this session", value: `<t:${afkCheckCounts[1]}:R>`, inline: true},
                             { name: "Trigger time", value: `<t:${Math.floor(Date.now() / 1000)}:R>`, inline: false},
                             { name: "Version", value: version_hash, inline: false},
                         ],
@@ -156,7 +156,7 @@ const __sk__ = new class {
     __quickSquad(text, color) {
         if (color != "#ff94c9") return
         let squad
-        if (/^Squad (.+) created.$/.test(text)) squad = text.match(/Squad (.+) created./)[1]
+        if (/^Squad (.+) created.$/.test(text)) squad = text.match(/^Squad (.+) created.$/)[1]
         let currentLocation = this.__getServerId()
         if (existedCodes.includes(squad)) return
         else existedCodes.push(squad)
@@ -279,7 +279,6 @@ for (const {prototype} of [OffscreenCanvasRenderingContext2D, CanvasRenderingCon
     }
     else break
     prototype.fillText = function(tx, x, y) {
-        if (/\b([0-9]|[1-9][0-9])\b Flowers?/.test(tx)) __sk__.__getServerId("Hel")
         __sk__.__quickSquad(tx, this.fillStyle)
         __sk__.__superTracker(tx, this.fillStyle, Boolean(0))
         return this.__sk_fll_tx(tx, x, y);
@@ -289,6 +288,7 @@ for (const {prototype} of [OffscreenCanvasRenderingContext2D, CanvasRenderingCon
         return this.__sk_stk_tx(tx, x, y)
     }
     prototype.measureText = function(tx) {
+        //if (/\b([0-9]|[1-9][0-9])\b Flowers?/.test(tx) && this.font == "18px Ubuntu") __sk__.__getServerId("Hel")
         __sk__.__getUsername(tx, this)
         __sk__.__superTracker(tx, null, Boolean(1))
         return this.__sk_msr_tx(tx)
@@ -298,4 +298,4 @@ for (const {prototype} of [OffscreenCanvasRenderingContext2D, CanvasRenderingCon
 setInterval(() => {
     __sk__.__updateServers()
     __sk__.__getServerId()
-}, 5 * 1000)
+}, 1 * 60 * 1000)
