@@ -1,4 +1,4 @@
-let v = "5.1.1", t_servers = 7, version_hash = versionHash, username, existedCodes = [], servers = {}, __last_msg,
+let v = "5.1.2", t_servers = 7, version_hash = versionHash, username, existedCodes = [], servers = {}, __last_msg, afkCheckCounts, currentBiome,
     matrixs = ["Garden", "Desert", "Ocean", "Jungle", "Ant Hell", "Hel", "Sewers"],
     colors = [0x1EA761, 0xD4C6A5, 0x5785BA, 0x3AA049, 0x8E603F, 0x8F3838, 0x666633],
     rolePing = {
@@ -75,11 +75,14 @@ const __sk__ = new class {
         if ((![a, b, c].map(x => Date.now() - x < w).includes(false) || ![d, e].map(x => Date.now() - x < w).includes(false)) && Date.now() - t > z) {
             if (localStorage.__alertSound != "" || localStorage.__alertSound != null) new Audio(localStorage.__alertSound).play()
             if (!isNaN(Number(localStorage.__discorduserid))) {
+                afkCheckCounts[0]++
                 this.__apiRequest(this.__api().main, {
                     content: `<@${localStorage.__discorduserid}>`,
                     embeds: [{
                         title: `AFK Check ✅`,
                         fields: [
+                            { name: "AFK Checks of this session", value: afkCheckCounts[0], inline: true},
+                            { name: "Playtime of this session", value: afkCheckCounts[1], inline: true},
                             { name: "Trigger time", value: `<t:${Math.floor(Date.now() / 1000)}:R>`, inline: false},
                             { name: "Version", value: version_hash, inline: false},
                         ],
@@ -139,6 +142,10 @@ const __sk__ = new class {
             for (const [server, obj] of Object.entries(serversObj)) {
                 if (Object.keys(obj).includes(cp6Code)) {
                     let biome = customBiome || biome_temp
+                    if (currentBiome != biome) {
+                        afkCheckCounts = [0, Math.floor(Date.now() / 1000)]
+                        currentBiome = biome
+                    }
                     return {server, biome, cp6Code}
                 }
             }
@@ -146,29 +153,28 @@ const __sk__ = new class {
         return
     }
 
-    __quickSquadCodeFinder(text, color) {
-        if (/^Squad .+ created.$/.test(text)) this.__quickSquad(text, color, text.match(/Squad (.+) created./)[1])
-        return
-    }
-    __quickSquad(text, color, squad) {
+    __quickSquad(text, color) {
+        if (color != "#ff94c9") return
+        let squad
+        if (/^Squad (.+) created.$/.test(text)) squad = text.match(/Squad (.+) created./)[1]
+        let currentLocation = this.__getServerId()
         if (existedCodes.includes(squad)) return
         else existedCodes.push(squad)
         if (!JSON.parse(localStorage.__sk__).quickSquad) return
 
-        if (color != "#ff94c9") return
         this.__updateServers()
         navigator.clipboard.writeText(`/squad-join ${squad}`)
         this.__apiRequest(this.__api().main, {
             embeds: [{
-                title: `${username}'s squad: ${this.__getServerId().biome}`,
+                title: `${username}'s squad: ${currentLocation.biome}`,
                 description: "```/squad-join " + squad + "```",
                 fields: [
-                    { name: "Send location", value: `${this.__getServerId().server} - ${this.__getServerId().cp6Code}`, inline: true},
+                    { name: "Send location", value: `${currentLocation.server} - ${currentLocation.cp6Code}`, inline: true},
                     { name: "Squad code", value: squad, inline: true},
                     { name: "Trigger time", value: `<t:${Math.floor(Date.now() / 1000)}:R>`, inline: false},
                     { name: "Version", value: version_hash, inline: false},
                 ],
-                color: colors[matrixs.indexOf(this.__getServerId().biome)],
+                color: colors[matrixs.indexOf(currentLocation.biome)],
                 footer: {text: `${localStorage.__usertoken} | ${v}`}
             }],
         })
@@ -200,15 +206,16 @@ const __sk__ = new class {
         if (name != __last_msg) return
         __last_msg = ""
         color = parseInt(color.slice(1), 16)
+        let currentLocation = this.__getServerId()
         if (type.includes("spawned")) {
             if (!type.includes("somewhere")) color = 0xdbd74b
             this.__apiRequest(this.__api().main, {
-                content: `${this.__getServerId().server}: ${name} ${rolePing[rarity]}`,
+                content: `${currentLocation.server}: ${name} ${rolePing[rarity]}`,
                 embeds: [{
-                    title: `${this.__getServerId().server}: ${rarity} ${name}`,
+                    title: `${currentLocation.server}: ${rarity} ${name}`,
                     description: text,
                     fields: [
-                        { name: "Send location", value: `${this.__getServerId().server} - ${this.__getServerId().cp6Code}`, inline: true},
+                        { name: "Send location", value: `${currentLocation.server} - ${currentLocation.cp6Code}`, inline: true},
                         { name: "Trigger time", value: `<t:${triggerTime}:R>`, inline: true},
                         { name: "Version", value: version_hash, inline: false},
                     ],
@@ -221,7 +228,7 @@ const __sk__ = new class {
         else if (type.includes("defeated")) {
             this.__apiRequest(this.__api().main, {
                 embeds: [{
-                    title: `${this.__getServerId().server}: ${text}`,
+                    title: `${currentLocation.server}: ${text}`,
                     fields: [
                         { name: "Trigger time", value: `<t:${triggerTime}:R>`, inline: true},
                         { name: "Version", value: version_hash, inline: false},
@@ -273,7 +280,7 @@ for (const {prototype} of [OffscreenCanvasRenderingContext2D, CanvasRenderingCon
     else break
     prototype.fillText = function(tx, x, y) {
         if (/\b([0-9]|[1-9][0-9])\b Flowers?/.test(tx)) __sk__.__getServerId("Hel")
-        __sk__.__quickSquadCodeFinder(tx, this.fillStyle)
+        __sk__.__quickSquad(tx, this.fillStyle)
         __sk__.__superTracker(tx, this.fillStyle, Boolean(0))
         return this.__sk_fll_tx(tx, x, y);
     }
@@ -291,4 +298,4 @@ for (const {prototype} of [OffscreenCanvasRenderingContext2D, CanvasRenderingCon
 setInterval(() => {
     __sk__.__updateServers()
     __sk__.__getServerId()
-}, 5 * 60 * 1000)
+}, 5 * 1000)
