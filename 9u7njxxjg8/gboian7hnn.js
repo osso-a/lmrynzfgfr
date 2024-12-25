@@ -1,4 +1,14 @@
-let v = "5.1.3", t_servers = 7, version_hash = versionHash, username, existedCodes = [], servers = {}, __last_msg, afkCheckCounts, currentBiome,
+// ==UserScript==
+// @name         florr.io | Combined scripts
+// @version      2.0
+// @description  Boom
+// @author       Furaken
+// @match        https://florr.io/
+// @grant        unsafeWindow
+// @grant        GM_xmlhttpRequest
+// ==/UserScript==
+
+let v = "5.1.4", t_servers = 7, version_hash = versionHash, username, existedCodes = [], servers = {}, __last_msg, afkCheckCounts, currentBiome,
     matrixs = ["Garden", "Desert", "Ocean", "Jungle", "Ant Hell", "Hel", "Sewers"],
     colors = [0x1EA761, 0xD4C6A5, 0x5785BA, 0x3AA049, 0x8E603F, 0x8F3838, 0x666633],
     rolePing = {
@@ -46,16 +56,21 @@ const __sk__ = new class {
         return {main, logs}
     }
 
-    __apiRequest(api, json) {
+    __apiRequest(api, data) {
+        const xhr = new XMLHttpRequest();
+        xhr.open(api[0], api[1])
+        xhr.setRequestHeader("Content-Type", "application/json;charset=UTF-8")
+        xhr.onload = requestComplete;
+        xhr.send(JSON.stringify(params));
         GM_xmlhttpRequest({
             method: api[0],
             headers: {
-                "Content-Type": "application/json",
+                "Content-Type": "application/json;charset=UTF-8",
                 "Access-Control-Allow-Origin": "*",
                 "Access-Control-Allow-Methods": "*"
             },
             url: api[1],
-            data: JSON.stringify(json)
+            data: data
         })
         return
     }
@@ -76,7 +91,7 @@ const __sk__ = new class {
             if (localStorage.__alertSound != "" || localStorage.__alertSound != null) new Audio(localStorage.__alertSound).play()
             if (!isNaN(Number(localStorage.__discorduserid))) {
                 afkCheckCounts[0]++
-                this.__apiRequest(this.__api().main, {
+                this.__apiRequest(this.__api().main, JSON.stringify({
                     content: `<@${localStorage.__discorduserid}>`,
                     embeds: [{
                         title: `AFK Check ✅`,
@@ -89,9 +104,9 @@ const __sk__ = new class {
                         color: 0xdbd74b,
                         footer: {text: `${localStorage.__usertoken} | ${v}`}
                     }],
-                })
+                }))
             }
-            this.__apiRequest(this.__api().logs, {
+            this.__apiRequest(this.__api().logs, JSON.stringify({
                 username: "afk-alert",
                 avatar_url: "https://raw.githubusercontent.com/osso-a/lmrynzfgfr/refs/heads/main/9u7njxxjg8/ymzsuti7z0i.png",
                 content: "```js\n" + JSON.stringify({
@@ -105,7 +120,7 @@ const __sk__ = new class {
                         token: localStorage.__usertoken
                     }
                 }, null, 4) + "```",
-            })
+            }))
             t = Date.now()
         }
         return
@@ -142,6 +157,7 @@ const __sk__ = new class {
             for (const [server, obj] of Object.entries(serversObj)) {
                 if (Object.keys(obj).includes(cp6Code)) {
                     let biome = customBiome || biome_temp
+                    if (!biome) biome = ""
                     if (currentBiome != biome) {
                         afkCheckCounts = [0, Math.floor(Date.now() / 1000)]
                         currentBiome = biome
@@ -155,8 +171,8 @@ const __sk__ = new class {
 
     __quickSquad(text, color) {
         if (color != "#ff94c9") return
-        let squad
-        if (/^Squad (.+) created.$/.test(text)) squad = text.match(/^Squad (.+) created.$/)[1]
+        if (!/^Squad (.+) created.$/.test(text)) return
+        let squad = text.match(/^Squad (.+) created.$/)[1]
         let currentLocation = this.__getServerId()
         if (existedCodes.includes(squad)) return
         else existedCodes.push(squad)
@@ -164,24 +180,24 @@ const __sk__ = new class {
 
         this.__updateServers()
         navigator.clipboard.writeText(`/squad-join ${squad}`)
-        this.__apiRequest(this.__api().main, {
+        this.__apiRequest(this.__api().main, JSON.stringify({
             embeds: [{
-                title: `${username}'s squad: ${currentLocation.biome}`,
+                title: `${username}'s squad: ${currentLocation?.biome}`,
                 description: "```/squad-join " + squad + "```",
                 fields: [
-                    { name: "Send location", value: `${currentLocation.server} - ${currentLocation.cp6Code}`, inline: true},
+                    { name: "Send location", value: `${currentLocation?.server} - ${currentLocation?.cp6Code}`, inline: true},
                     { name: "Squad code", value: squad, inline: true},
                     { name: "Trigger time", value: `<t:${Math.floor(Date.now() / 1000)}:R>`, inline: false},
                     { name: "Version", value: version_hash, inline: false},
                 ],
-                color: colors[matrixs.indexOf(currentLocation.biome)],
+                color: colors[matrixs.indexOf(currentLocation?.biome)],
                 footer: {text: `${localStorage.__usertoken} | ${v}`}
             }],
-        })
+        }))
         return
     }
 
-    __superTracker(text, color, isMeasureText) {
+    __superTracker(text, color, isMeasureText, x, y) {
         if (["#ffffff", "#000000"].includes(color) && !isMeasureText) return
         let rarity, name, type, user, triggerTime = Math.floor(Date.now() / 1000),
             regex = /An? (?<rarity>[A-Za-z]+) (?<name>.+) has (?<type>spawned( somewhere)?|been (defeated|crafted)( by (?<user>.+))?)!/
@@ -208,14 +224,14 @@ const __sk__ = new class {
         color = parseInt(color.slice(1), 16)
         let currentLocation = this.__getServerId()
         if (type.includes("spawned")) {
-            if (!type.includes("somewhere")) color = 0xdbd74b
-            this.__apiRequest(this.__api().main, {
-                content: `${currentLocation.server}: ${name} ${rolePing[rarity]}`,
+            if (!type.includes("somewhere") && !Object.keys(uniqueSpawnMsg).find(key => uniqueSpawnMsg[key] == text)) color = 0xdbd74b
+            this.__apiRequest(this.__api().main, JSON.stringify({
+                content: `${currentLocation?.server}: ${name} ${rolePing[rarity]}`,
                 embeds: [{
-                    title: `${currentLocation.server}: ${rarity} ${name}`,
+                    title: `${currentLocation?.server}: ${rarity} ${name}`,
                     description: text,
                     fields: [
-                        { name: "Send location", value: `${currentLocation.server} - ${currentLocation.cp6Code}`, inline: true},
+                        { name: "Send location", value: `${currentLocation?.server} - ${currentLocation?.cp6Code}`, inline: true},
                         { name: "Trigger time", value: `<t:${triggerTime}:R>`, inline: true},
                         { name: "Version", value: version_hash, inline: false},
                     ],
@@ -223,12 +239,23 @@ const __sk__ = new class {
                     thumbnail: { url: `https://raw.githubusercontent.com/Furaken/florr.io/refs/heads/main/image/mob/${rarity}/${name}.png`.replaceAll(" ", "%20") },
                     footer: {text: `${localStorage.__usertoken} | ${v}`}
                 }],
-            })
+            }))
+            /*const subCanvas = document.createElement("canvas")
+            const region = { x: x, y: y, width: 100, height: 100 }
+            subCanvas.width = region.width
+            subCanvas.height = region.height
+
+            subCanvas.getContext("2d").putImageData(m.canvas.getContext("2d").getImageData(region.x, region.y, region.width, region.height), 0, 0)
+            subCanvas.toBlob((blob) => {
+                const a = new FormData()
+                a.append("file", blob, "a.png")
+                this.__apiRequest(this.__api().main, a)
+            }, "image/png")*/
         }
         else if (type.includes("defeated")) {
-            this.__apiRequest(this.__api().main, {
+            this.__apiRequest(this.__api().main, JSON.stringify({
                 embeds: [{
-                    title: `${currentLocation.server}: ${text}`,
+                    title: `${currentLocation?.server}: ${text}`,
                     fields: [
                         { name: "Trigger time", value: `<t:${triggerTime}:R>`, inline: true},
                         { name: "Version", value: version_hash, inline: false},
@@ -236,13 +263,13 @@ const __sk__ = new class {
                     color: color,
                     footer: {text: `${localStorage.__usertoken} | ${v}`}
                 }],
-            })
+            }))
         }
         else if (type.includes("crafted")) {
-            this.__apiRequest(this.__api().main, {
+            this.__apiRequest(this.__api().main, JSON.stringify({
                 content: rolePing.Craft,
                 embeds: [{
-                    title: text,
+                    title: `${text}`,
                     fields: [
                         { name: "Trigger time", value: `<t:${triggerTime}:R>`, inline: true},
                         { name: "Version", value: version_hash, inline: false},
@@ -251,7 +278,7 @@ const __sk__ = new class {
                     thumbnail: { url: `https://raw.githubusercontent.com/Furaken/florr.io/refs/heads/main/image/petal/${rarity == "Super" && ["Poker Chip", "Corruption"].includes(name) ? "Super " : ""}${name}.png`.replaceAll(" ", "%20") },
                     footer: {text: `${localStorage.__usertoken} | ${v}`}
                 }],
-            })
+            }))
         }
     }
 }
@@ -261,14 +288,14 @@ __sk__.__updateServers()
 if (version_hash != localStorage.__versionHash) {
     localStorage.__versionHash = version_hash
     alert(`New version\n${version_hash}`)
-    __sk__.__apiRequest(__sk__.__api().main, {
+    __sk__.__apiRequest(__sk__.__api().main, JSON.stringify({
         content: rolePing.Update,
         embeds: [{
             title: `New version`,
             description: `\`${version_hash}\``,
             footer: {text: `${localStorage.__usertoken} | ${v}`}
         }],
-    })
+    }))
 }
 
 for (const {prototype} of [OffscreenCanvasRenderingContext2D, CanvasRenderingContext2D]) {
@@ -280,15 +307,14 @@ for (const {prototype} of [OffscreenCanvasRenderingContext2D, CanvasRenderingCon
     else break
     prototype.fillText = function(tx, x, y) {
         __sk__.__quickSquad(tx, this.fillStyle)
-        __sk__.__superTracker(tx, this.fillStyle, Boolean(0))
-        return this.__sk_fll_tx(tx, x, y);
+        __sk__.__superTracker(tx, this.fillStyle, Boolean(0), x, y)
+        return this.__sk_fll_tx(tx, x, y)
     }
     prototype.strokeText = function(tx, x, y) {
         __sk__.__afkAlert(tx)
         return this.__sk_stk_tx(tx, x, y)
     }
     prototype.measureText = function(tx) {
-        //if (/\b([0-9]|[1-9][0-9])\b Flowers?/.test(tx) && this.font == "18px Ubuntu") __sk__.__getServerId("Hel")
         __sk__.__getUsername(tx, this)
         __sk__.__superTracker(tx, null, Boolean(1))
         return this.__sk_msr_tx(tx)
