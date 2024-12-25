@@ -1,14 +1,4 @@
-// ==UserScript==
-// @name         florr.io | Combined scripts
-// @version      2.0
-// @description  Boom
-// @author       Furaken
-// @match        https://florr.io/
-// @grant        unsafeWindow
-// @grant        GM_xmlhttpRequest
-// ==/UserScript==
-
-let v = "5.1.4", t_servers = 7, version_hash = versionHash, username, existedCodes = [], servers = {}, __last_msg, afkCheckCounts, currentBiome,
+let v = "5.1.5", t_servers = 7, version_hash = versionHash, username, existedCodes = [], servers = {}, __last_msg, afkCheckCounts, currentBiome,
     matrixs = ["Garden", "Desert", "Ocean", "Jungle", "Ant Hell", "Hel", "Sewers"],
     colors = [0x1EA761, 0xD4C6A5, 0x5785BA, 0x3AA049, 0x8E603F, 0x8F3838, 0x666633],
     rolePing = {
@@ -57,11 +47,6 @@ const __sk__ = new class {
     }
 
     __apiRequest(api, data) {
-        const xhr = new XMLHttpRequest();
-        xhr.open(api[0], api[1])
-        xhr.setRequestHeader("Content-Type", "application/json;charset=UTF-8")
-        xhr.onload = requestComplete;
-        xhr.send(JSON.stringify(params));
         GM_xmlhttpRequest({
             method: api[0],
             headers: {
