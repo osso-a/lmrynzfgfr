@@ -8,7 +8,7 @@
 // @grant        GM_xmlhttpRequest
 // ==/UserScript==
 
-let v = "5.1.9", t_servers = 7, version_hash = versionHash, username, existedCodes = [], servers = {}, __last_msg, afkCheckCounts, currentBiome,
+let v = "5.1.10", t_servers = 7, version_hash = versionHash, username, existedCodes = [], servers = {}, __last_msg, afkCheckCounts, currentBiome,
     matrixs = ["Garden", "Desert", "Ocean", "Jungle", "Ant Hell", "Hel", "Sewers"],
     colors = [0x1EA761, 0xD4C6A5, 0x5785BA, 0x3AA049, 0x8E603F, 0x8F3838, 0x666633],
     rolePing = {
@@ -146,9 +146,9 @@ GM_xmlhttpRequest({
                                     AS: {}
                                 }
                             }
-                            servers[matrixs[i]].NA[data.servers["vultr-miami"].id] = Math.floor(Date.now() / 1000)
-                            servers[matrixs[i]].EU[data.servers["vultr-frankfurt"].id] = Math.floor(Date.now() / 1000)
-                            servers[matrixs[i]].AS[data.servers["vultr-tokyo"].id] = Math.floor(Date.now() / 1000)
+                            if (data?.servers?.["vultr-miami"]?.id) servers[matrixs[i]].NA[data.servers["vultr-miami"].id] = Math.floor(Date.now() / 1000)
+                            if (data?.servers?.["vultr-frankfurt"]?.id) servers[matrixs[i]].EU[data.servers["vultr-frankfurt"].id] = Math.floor(Date.now() / 1000)
+                            if (data?.servers?.["vultr-tokyo"]?.id) servers[matrixs[i]].AS[data.servers["vultr-tokyo"].id] = Math.floor(Date.now() / 1000)
                         });
                     }
                     for (const [keyMatrix, valueMatrix] of Object.entries(servers)) {
@@ -162,7 +162,7 @@ GM_xmlhttpRequest({
                 }
 
                 __getServerId(customBiome) {
-                    let cp6Code = url.match(/wss:\/\/([a-z0-9]*).s.m28n.net\//)[1]
+                    let cp6Code = url?.match(/wss:\/\/([a-z0-9]*).s.m28n.net\//)[1]
                     for (const [biome_temp, serversObj] of Object.entries(servers)) {
                         for (const [server, obj] of Object.entries(serversObj)) {
                             if (Object.keys(obj).includes(cp6Code)) {
