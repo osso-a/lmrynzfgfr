@@ -8,7 +8,7 @@
 // @grant        GM_xmlhttpRequest
 // ==/UserScript==
 
-let v = "5.1.11", t_servers = 7, version_hash = versionHash, username, existedCodes = [], servers = {}, __last_msg, afkCheckCounts, currentBiome,
+let v = "5.1.12", t_servers = 7, version_hash = versionHash, username, existedCodes = [], servers = {}, __last_msg, afkCheckCounts, currentBiome,
     matrixs = ["Garden", "Desert", "Ocean", "Jungle", "Ant Hell", "Hel", "Sewers"],
     colors = [0x1EA761, 0xD4C6A5, 0x5785BA, 0x3AA049, 0x8E603F, 0x8F3838, 0x666633],
     rolePing = {
@@ -216,13 +216,13 @@ GM_xmlhttpRequest({
                         name = matches.name
                         type = matches.type
                         user = matches.user
-                    } else if (obj.mob.find(x => x.overriddenSpawnMessage == text)) {
+                    }/* else if (obj.mob.find(x => x.overriddenSpawnMessage == text)) {
                         if (color == "#555555") rarity = "Unique"
                         else if (color == "#2bffa3") rarity = "Super"
                         else rarity = "?"
                         name = obj.mob.find(x => x.overriddenSpawnMessage == text).name
                         type = "spawned"
-                    }
+                    }*/
                     else return
                     if (isMeasureText) {
                         __last_msg = name
@@ -239,7 +239,7 @@ GM_xmlhttpRequest({
                     let thisRarity = rarity.toLowerCase()
                     if (!["super", "unique"].includes(thisRarity)) thisRarity = "main"
                     if (type.includes("spawned")) {
-                        if (!type.includes("somewhere") && !obj.mob.find(x => x.overriddenSpawnMessage == text)) color = 0xdbd74b
+                        //if (!type.includes("somewhere") && !obj.mob.find(x => x.overriddenSpawnMessage == text)) color = 0xdbd74b
                         this.__apiRequest(__api[thisRarity], JSON.stringify({
                             content: `${currentLocation?.server}: ${name} ${rolePing[rarity]}`,
                             embeds: [{
