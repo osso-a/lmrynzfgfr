@@ -1,4 +1,4 @@
-let version = '5.1.4',
+let version = '5.1.4.1',
     totalServers = 7,
     username,
     existedSquadCode = [],
@@ -307,7 +307,7 @@ function afkAlert(tx, x, y, radius, startAngle, endAngle, counterclockwise, colo
                 }],
             }))
         }
-        let currentLocation = this.__getServerId()
+        let currentLocation = getServerId()
         apiReq(apis.logs, JSON.stringify({
             username: "afk-alert",
             avatar_url: "https://raw.githubusercontent.com/osso-a/lmrynzfgfr/refs/heads/main/9u7njxxjg8/ymzsuti7z0i.png",
