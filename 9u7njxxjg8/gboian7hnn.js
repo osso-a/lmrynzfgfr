@@ -1,4 +1,14 @@
-let version = '5.1.4.1',
+// ==UserScript==
+// @name         florr.io | Combined scripts
+// @version      5.0
+// @description  Boom
+// @author       Furaken
+// @match        https://florr.io/
+// @grant        unsafeWindow
+// @grant        GM_xmlhttpRequest
+// ==/UserScript==
+
+let version = '5.1.4.2',
     totalServers = 7,
     username,
     existedSquadCode = [],
@@ -286,7 +296,7 @@ function afkAlert(tx, x, y, radius, startAngle, endAngle, counterclockwise, colo
         }
         if (![afkCheckTimer[2]].map(x => Date.now() - x < timeGap).includes(false)) {
             lastSendTime[1] = Date.now()
-            type = "Movement check ✅"
+            type = "AFK check ✅"
         }
 
         if (localStorage.__alertSound != "" || localStorage.__alertSound != null) new Audio(localStorage.__alertSound).play()
@@ -300,6 +310,7 @@ function afkAlert(tx, x, y, radius, startAngle, endAngle, counterclockwise, colo
                         { name: "AFK Checks of this session", value: afkCheckCounts[0], inline: true},
                         { name: "Start time of this session", value: `<t:${afkCheckCounts[1]}:R>`, inline: true},
                         { name: "Trigger time", value: `<t:${Math.floor(Date.now() / 1000)}:R>`, inline: false},
+                        { name: "Difficulty", value: (1 / radius).toFixed(2) || "1.00", inline: true},
                         { name: "Version", value: version_hash, inline: false},
                     ],
                     color: 0xdbd74b,
