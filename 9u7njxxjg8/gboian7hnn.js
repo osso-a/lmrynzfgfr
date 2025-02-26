@@ -1,4 +1,4 @@
-let version = '5.1.3',
+let version = '5.1.4',
     totalServers = 7,
     username,
     existedSquadCode = [],
@@ -24,7 +24,7 @@ let version = '5.1.3',
         "Hel": "You sense ominous vibrations coming from a different realm...",
         "Gambler": "You hear someone whisper faintly... \"just... one more game...\""
     },
-    rarity = [
+    rarityColor = [
         "#7eef6d",
         "#ffe65d",
         "#4d52e3",
@@ -268,8 +268,8 @@ function superTracker(text, color, isMeasureText, x, y) {
     }))
 }
 
-var afkCheckTimer = [],
-    lastSendTime = [],
+var afkCheckTimer = new Array(3).fill(0),
+    lastSendTime = new Array(2).fill(0),
     timeGap = 300,
     timeCd = 5 * 60 * 1000
 
@@ -277,7 +277,7 @@ function afkAlert(tx, x, y, radius, startAngle, endAngle, counterclockwise, colo
     if (!JSON.parse(localStorage.__sk__).afk) return
     if (tx == "AFK?") afkCheckTimer[0] = Date.now()
     if (tx == "You will be kicked for being AFK if you don't move soon.") afkCheckTimer[1] = Date.now()
-    if (tx == "ARC" && rarity.includes(color) && 0 <= radius && radius <= 0.06) afkCheckTimer[2] = Date.now()
+    if (tx == "ARC" && rarityColor.includes(color) && 0 <= radius && radius <= 0.06) afkCheckTimer[2] = Date.now()
     if (![afkCheckTimer[0], afkCheckTimer[1]].map(x => Date.now() - x < timeGap).includes(false) && Date.now() - lastSendTime[0] > timeCd || ![afkCheckTimer[2]].map(x => Date.now() - x < timeGap).includes(false) && Date.now() - lastSendTime[1] > timeCd) {
         let type = "?"
         if (![afkCheckTimer[0], afkCheckTimer[1]].map(x => Date.now() - x < timeGap).includes(false)) {
